@@ -203,7 +203,12 @@ public class QuizView extends View{
 		Log.d("Quiz","QuizView.resume");
 		if (mIsMistake){
 			mIsMistake = false;
-			invalidate();			
+			mHander.post(new Runnable() {
+				@Override
+				public void run() {
+					invalidate();				
+				}
+			});
 		}
 
 		if (mCurrentTask != null){
@@ -240,7 +245,13 @@ public class QuizView extends View{
 		String currentFilename = getCurrentFilename();
 		playHint(currentFilename);
 		
-		invalidate();
+		mHander.post(new Runnable() {
+			@Override
+			public void run() {
+				invalidate();
+			}
+		});
+		
 	}
 	
 	private String getCurrentFilename(){
