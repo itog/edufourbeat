@@ -67,12 +67,7 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 			public void quizFinished() {
 				// 正解せずクイズ終了
 				Log.d("Quiz","クイズ終了");
-				mHander.postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						startNext();						
-					}
-				}, 5000);
+				mGameState = GAME_STATE.IDLE;
 			}
 		});
 	}
@@ -194,7 +189,6 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 				finish();
 			} else {
 				startNext();
-				mGameState = GAME_STATE.GAUGE;
 			}
 			break;
 		case GAUGE:
@@ -287,6 +281,7 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 		}
 		mQuizView.start(mRound);
 		mRound++;
+		mGameState = GAME_STATE.GAUGE;
 	}
 
     boolean checkAnswer(List<String> answers) {
