@@ -35,6 +35,7 @@ public class QuizView extends View{
 				"uma2.jpg",
 				"uma3.jpg",
 				"uma4.jpg",
+				"uma.mp3",
 				"uma5.jpg",
 			},
 			{
@@ -42,6 +43,7 @@ public class QuizView extends View{
 				"inu2.jpg",
 				"inu3.jpg",
 				"inu4.jpg",
+				"inu.mp3",
 				"inu5.jpg",
 			},
 			{
@@ -49,6 +51,7 @@ public class QuizView extends View{
 				"elephant2.jpg",
 				"elephant3.jpg",
 				"elephant4.jpg",
+				"zou.mp3",
 				"elephant5.jpg",
 			},
 			{
@@ -56,6 +59,7 @@ public class QuizView extends View{
 				"neko2.jpg",
 				"neko3.jpg",
 				"neko4.jpg",
+				"cat.mp3",
 				"neko5.jpg",
 			},
 	};
@@ -126,12 +130,32 @@ public class QuizView extends View{
 	 */
 	private void playSound(String filename){
 		try {
+			
+			if (filename.equals("uma.mp3")){
+				MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.uma);
+				mp.start();
+				return;
+			}else if (filename.equals("zou.mp3")){
+				MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.zou);
+				mp.start();
+				return;
+			}else if (filename.equals("inu.mp3")){
+				MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.inu);
+				mp.start();
+				return;
+			}else if (filename.equals("cat.mp3")){
+				MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.cat);
+				mp.start();
+				return;
+			}
 			AssetFileDescriptor afd = getContext().getAssets().openFd(filename);
 	    	MediaPlayer mp = new MediaPlayer();
 	    	mp.setDataSource(afd.getFileDescriptor());
 	    	mp.prepare();
 	    	mp.start();
-	    	Log.d("Quiz","音声再生 "+filename);
+	    	
+	    	AssetFileDescriptor afd2 = getContext().getAssets().openFd("cat.mp3");
+	    	Log.d("Quiz","音声再生 "+filename+ "  " +" FD="+afd.getFileDescriptor() + " cat.mp3 FD="+afd2.getFileDescriptor());
 		} catch (IOException e) {
 			Log.e("Quiz", "音声ファイル読み込み失敗",e);
 			e.printStackTrace();
