@@ -179,6 +179,9 @@ public class QuizView extends View{
 	 * @param quizNo ステージの何問目か
 	 */
 	public void start(int quizNo){
+		if (quizNo >= mStage.length){
+			Log.d("Quiz","存在しないステージが指定されました。");
+		}
 		Log.d("Quiz","QuizView.start");
 		initStage(null);
 		mCurrentQuizNo = quizNo;
