@@ -12,7 +12,7 @@
         <TextView
             android:id="@+id/gauge0"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="80dp"
             android:layout_weight="1"
             android:background="#f00"
             android:text="0"
@@ -20,7 +20,7 @@
         <TextView
             android:id="@+id/gauge1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="80dp"
             android:layout_weight="1"
             android:background="#00f"
             android:text="0"
@@ -28,7 +28,7 @@
         <TextView
             android:id="@+id/gauge2"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="80dp"
             android:layout_weight="1"
             android:background="#ff0"
             android:text="0"
@@ -36,7 +36,7 @@
         <TextView
             android:id="@+id/gauge3"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="80dp"
             android:layout_weight="1"
             android:text="0"
             android:background="#0f0"

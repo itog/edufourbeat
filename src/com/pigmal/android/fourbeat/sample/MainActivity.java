@@ -16,13 +16,13 @@ import android.widget.Toast;
 
 public class MainActivity extends FourBeatBaseActivity implements OnClickListener {
 	protected static final String TAG = "ServiceSample";
-	
+
 	TextView[] mTextViews; //TODO ゲージ画像に差し替え
 	private QuizView mQuizView;
 	int[] mPoints = {0, 0, 0, 0};
 	int[] mCorrectPoints = {0, 0, 0, 0};
 	private Handler mHander = new Handler();
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,8 +40,7 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 		mTextViews[3] = (TextView)findViewById(R.id.gauge3);
 		mTextViews[3].setOnClickListener(this);
 		
-		mGameState = GAME_STATE.GAUGE; // GAME_STATE.IDLE;
-		mQuizView.start(0); // 0 = ステージ1の1問目
+		mGameState = GAME_STATE.IDLE;
 	}
 
 	@Override
@@ -62,6 +61,7 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 			public void quizFinished() {
 				// 正解せずクイズ終了
 				Log.d("Quiz","クイズ終了");
+				startNext();
 			}
 		});
 	}
@@ -72,13 +72,20 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 		mQuizView.stop();
 	}
 
+
 	private void updateUi(final int id) {
 		this.runOnUiThread(new Runnable() {
 
 			@Override
 			public void run() {
 				mTextViews[id].setText(String.valueOf(mPoints[id]));
-				// gauge
+//				// gauge
+//				for (int i = 0; i < mTextViews.length; i++) {
+//					if (mPoints[i] / 5) {
+//						mTextViews[i].setBackground(R.drawable.ic_launcher);
+//					}
+//				}
+			}
 			}
 		});
 	}
@@ -118,14 +125,18 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 	int mRound = 0;
 	enum GAME_STATE {IDLE, GAUGE, ANSWER};
 	GAME_STATE mGameState = GAME_STATE.IDLE;
-	static final int GAUGE_MAX = 5;
+	static final int GAUGE_MAX = 30;
 
 	void handleEvent(final int id) {
 		Log.v(TAG, "handle " + id);
 		switch (mGameState) {
 		case IDLE:
-			mQuizView.start(mRound); // 0 = ステージ1の1問目
-			mGameState = GAME_STATE.GAUGE;
+			if (mRound >= mQuizView.getQuizSize()) {
+				finish();
+			} else {
+				startNext();
+				mGameState = GAME_STATE.GAUGE;
+			}
 			break;
 		case GAUGE:
 			mPoints[id] += 1;
@@ -188,10 +199,6 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 			if (checkAnswer(results)) {
 				// TODO 正解！ポイント追加？
 				mGameState = GAME_STATE.IDLE;
-				mRound++;
-				if (mRound > mQuizView.getQuizSize()) {
-					finish();
-				}
 			} else {
 				// 誤答であれば間違い画像が表示されるので、2秒後に再開
 				mHander.postDelayed(new Runnable() {
@@ -216,6 +223,11 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
     }
 
 	void startNext() {
+		for (int i = 0; i < mPoints.length; i++) {
+			mPoints[i] = 0;
+			updateUi(i);
+		}
+		mRound++;
 		mQuizView.start(mRound);
 	}
 
