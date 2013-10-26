@@ -85,7 +85,7 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 //						mTextViews[i].setBackground(R.drawable.ic_launcher);
 //					}
 //				}
-			}
+//			}
 			}
 		});
 	}
