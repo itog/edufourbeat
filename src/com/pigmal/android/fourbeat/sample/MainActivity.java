@@ -175,7 +175,7 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 				// TODO 正解！ポイント追加？
 				mGameState = GAME_STATE.IDLE;
 				mRound++;
-				if (mRound > mQuizView.getStageCount()) {
+				if (mRound > mQuizView.getQuizSize()) {
 					finish();
 				}
 			} else {
