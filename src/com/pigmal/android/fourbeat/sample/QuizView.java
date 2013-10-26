@@ -75,11 +75,13 @@ public class QuizView extends View{
 	private Bitmap mCurrentBitmap = null;
 	private Bitmap mCorrectBitmap = null;
 	private Bitmap mIncorrectBitmap = null;
+	private Bitmap mTimeoutBitmap = null;
 	private Runnable mCurrentTask;
 	private int mCurrentPanelQuestion = 0;
 	private QuizViewListener mListener = null;
 	private boolean mIsCorrect = false;
 	private boolean mIsMistake = false;
+	private boolean mIsTimeout = false;
 	
 	private static final int DELAY_MS = 3000;
 
@@ -92,6 +94,9 @@ public class QuizView extends View{
 			
 			is = getResources().getAssets().open("incorrect.png");
 			mIncorrectBitmap = BitmapFactory.decodeStream(is);
+			
+			is = getResources().getAssets().open("timeout.png");
+			mTimeoutBitmap = BitmapFactory.decodeStream(is);
 		} catch (IOException e) {
 			Log.e("Quiz","正解画像読み込み失敗");
 			e.printStackTrace();
@@ -179,6 +184,7 @@ public class QuizView extends View{
 		mCurrentQuizNo = quizNo;
 		mCurrentPanelQuestion = 0; // 問題の一枚目の画像にセット
 		mCurrentAnswer = mAnswers[quizNo];
+		mIsTimeout = false;
 		mIsCorrect = false;
 		playHint(getCurrentFilename());
 		
@@ -226,6 +232,8 @@ public class QuizView extends View{
 					if (mListener != null){
 						mListener.quizFinished();
 					}
+					mIsTimeout = true;
+					invalidateByUIThread();
 				}else{
 					refreash();
 					setNextHintTimer();
@@ -273,6 +281,13 @@ public class QuizView extends View{
 			Rect src = new Rect(0, 0, mIncorrectBitmap.getWidth(), mIncorrectBitmap.getHeight());
 			Rect dst = new Rect(0, 0,getWidth(),getHeight());
 			canvas.drawBitmap(mIncorrectBitmap, src, dst, null);
+		}
+		
+		if (mIsTimeout){
+			Log.d("Quiz", "タイムアウト");
+			Rect src = new Rect(0, 0, mTimeoutBitmap.getWidth(), mTimeoutBitmap.getHeight());
+			Rect dst = new Rect(0, 0,getWidth(),getHeight());
+			canvas.drawBitmap(mTimeoutBitmap, src, dst, null);
 		}
 		
 		Log.d("Quiz","再描画 end");

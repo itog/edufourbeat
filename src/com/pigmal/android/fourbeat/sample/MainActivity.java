@@ -61,7 +61,12 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 			public void quizFinished() {
 				// 正解せずクイズ終了
 				Log.d("Quiz","クイズ終了");
-				startNext();
+				mHander.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						startNext();						
+					}
+				}, 5000);
 			}
 		});
 	}
