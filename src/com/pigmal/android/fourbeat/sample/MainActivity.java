@@ -112,6 +112,7 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 		switch (mGameState) {
 		case IDLE:
 			mQuizView.start(mRound); // 0 = ステージ1の1問目
+			mGameState = GAME_STATE.GAUGE;
 			break;
 		case GAUGE:
 			mPoints[id] += 1;
