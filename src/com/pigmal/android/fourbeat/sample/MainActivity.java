@@ -17,6 +17,12 @@ import android.widget.Toast;
 public class MainActivity extends FourBeatBaseActivity implements OnClickListener {
 	protected static final String TAG = "ServiceSample";
 
+	int mGaugeResources[][];
+	static final int[] RES_RED = {R.drawable.red0, R.drawable.red1, R.drawable.red2, R.drawable.red3, R.drawable.red4, R.drawable.red5};
+	static final int[] RES_BLUE = {R.drawable.blue0, R.drawable.blue1, R.drawable.blue2, R.drawable.blue3, R.drawable.blue4, R.drawable.blue5};
+	static final int[] RES_YELLOW = {R.drawable.yellow0, R.drawable.yellow1, R.drawable.yellow2, R.drawable.yellow3, R.drawable.yellow4, R.drawable.yellow5};
+	static final int[] RES_GREEN = {R.drawable.green0, R.drawable.green1, R.drawable.green2, R.drawable.green3, R.drawable.green4, R.drawable.green5};
+
 	TextView[] mTextViews; //TODO ゲージ画像に差し替え
 	private QuizView mQuizView;
 	int[] mPoints = {0, 0, 0, 0};
@@ -76,23 +82,71 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 		super.onStop();
 		mQuizView.stop();
 	}
-
-
+	
 	private void updateUi(final int id) {
-		this.runOnUiThread(new Runnable() {
-
-			@Override
-			public void run() {
-				mTextViews[id].setText(String.valueOf(mPoints[id]));
-//				// gauge
-//				for (int i = 0; i < mTextViews.length; i++) {
-//					if (mPoints[i] / 5) {
-//						mTextViews[i].setBackground(R.drawable.ic_launcher);
-//					}
-//				}
-//			}
-			}
-		});
+		int[] reses_org = RES_RED;
+		switch (id) {
+		case 0:
+			reses_org = RES_RED;
+			break;
+		case 1:
+			reses_org = RES_BLUE;
+			break;
+		case 2:
+			reses_org = RES_YELLOW;
+			break;
+		case 3:
+			reses_org = RES_GREEN;
+			break;
+		default:
+			break;
+		}
+		
+		final int[] reses = reses_org; 
+		
+		if (mPoints[id] < 10) {
+			this.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					mTextViews[id].setBackgroundResource(reses[0]);
+				}
+			});
+		} else if (mPoints[id] == 10) {
+			this.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					mTextViews[id].setBackgroundResource(reses[1]);
+				}
+			});
+		} else if (mPoints[id] == 20) {
+			this.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					mTextViews[id].setBackgroundResource(reses[2]);
+				}
+			});
+		} else if (mPoints[id] == 30) {
+			this.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					mTextViews[id].setBackgroundResource(reses[3]);
+				}
+			});
+		} else if (mPoints[id] == 40) {
+			this.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					mTextViews[id].setBackgroundResource(reses[4]);
+				}
+			});
+		} else if (mPoints[id] > 50) {
+			this.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					mTextViews[id].setBackgroundResource(reses[5]);
+				}
+			});
+		}
 	}
 
 	@Override
@@ -130,7 +184,7 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 	int mRound = 0;
 	enum GAME_STATE {IDLE, GAUGE, ANSWER};
 	GAME_STATE mGameState = GAME_STATE.IDLE;
-	static final int GAUGE_MAX = 30;
+	static final int GAUGE_MAX = 51;
 
 	void handleEvent(final int id) {
 		Log.v(TAG, "handle " + id);
@@ -147,18 +201,17 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 			mPoints[id] += 1;
 			if (mPoints[id] == GAUGE_MAX) {
 				mGameState = GAME_STATE.ANSWER;
-				startAnswer(id);
-				
+				startAnswer(id);				
 			} else if (mPoints[id] > GAUGE_MAX){
 				//ignore
 			}
+			updateUi(id);
 			break;
 		case ANSWER:
 			break;
 		default:
 			break;
 		}
-		updateUi(id);
 	}
 
 	// player id が回答権取得。音声認識スタート
@@ -232,8 +285,8 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 			mPoints[i] = 0;
 			updateUi(i);
 		}
-		mRound++;
 		mQuizView.start(mRound);
+		mRound++;
 	}
 
     boolean checkAnswer(List<String> answers) {

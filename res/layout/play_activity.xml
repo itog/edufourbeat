@@ -14,7 +14,7 @@
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_weight="1"
-            android:background="#f00"
+            android:background="@drawable/red0"
             android:text="0"
             android:textAppearance="?android:attr/textAppearanceLarge" />
         <TextView
@@ -22,7 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_weight="1"
-            android:background="#00f"
+            android:background="@drawable/blue0"
             android:text="0"
             android:textAppearance="?android:attr/textAppearanceLarge" />
         <TextView
@@ -30,7 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="80dp"
             android:layout_weight="1"
-            android:background="#ff0"
+            android:background="@drawable/yellow0"
             android:text="0"
             android:textAppearance="?android:attr/textAppearanceLarge" />
         <TextView
@@ -39,7 +39,7 @@
             android:layout_height="80dp"
             android:layout_weight="1"
             android:text="0"
-            android:background="#0f0"
+            android:background="@drawable/green0"
             android:textAppearance="?android:attr/textAppearanceLarge" />
         </LinearLayout>
 
