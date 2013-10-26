@@ -45,10 +45,10 @@
 
     <com.pigmal.android.fourbeat.sample.QuizView
         android:id="@+id/quizview"
-        android:layout_width="550dp"
-        android:layout_height="340dp"
-        android:layout_alignParentTop="true"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="43dp" />
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="35dp" />
 
 </RelativeLayout>
