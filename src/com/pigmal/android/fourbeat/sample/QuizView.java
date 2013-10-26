@@ -23,22 +23,27 @@ public class QuizView extends View{
 
 	private Handler mHander = new Handler();
 	
-	private String[] stage1 = {
+	private int currentQuizNo = 0;
+	
+	private String[][] stage =
+		{
+			{
+				"uma_sample.jpg",
 				"android_1.gif",
 				"android_2.jpg",
+				"horse.mp3",
 				"android_3.jpg",
+			}
 	};
 	
 	private String[] answers = {
-			"犬",
-			"猫"
+			"馬",
+			"象",
+			"猫",
+			"犬"
 	};
 	
-	private MediaPlayer mediaPlayer;
-	
 	private String currentAnswer = "馬";
-	
-	private List<Bitmap> bitmapList = new ArrayList<Bitmap>();
 	
 	private Bitmap currentBitmap = null;
 	private Runnable currentTask;
@@ -46,7 +51,7 @@ public class QuizView extends View{
 	private QuizViewListener listener = null;
 
 	private static final int DELAY_MS = 3000;
-
+	
 	public QuizView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
@@ -57,44 +62,54 @@ public class QuizView extends View{
 	 * @param stage
 	 */
 	public void initStage(String stage) {
-		for(String filename:stage1){
-			Log.d("Quiz","ファイル読み込み " + filename );
-			String extension = null;
-			int point = filename.lastIndexOf(".");
-		    if (point != -1) {
-		        extension = filename.substring(point + 1);
-		    }
-		    
-		    if ("gif".equals(extension) || "jpg".equals(extension)){
-		    	InputStream is;
-				try {
-					is = getResources().getAssets().open(filename);
-			        Bitmap bm = BitmapFactory.decodeStream(is);
-			        bitmapList.add(bm);
-				} catch (IOException e) {
-					Log.e("Quiz", "ファイル読み込み失敗", e);
-					e.printStackTrace();
-				}
-		    }
-		}
-		
-		// Sounds
-		try {
-			AssetFileDescriptor afd = getContext().getAssets().openFd("hourse.mp3");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+		currentQuizNo = 0;
+	}
+	
+	private void playHint(String filename){
+		String extension = null;
+		int point = filename.lastIndexOf(".");
+	    if (point != -1) {
+	        extension = filename.substring(point + 1);
+	    }
+	    
+	    if ("gif".equals(extension) || "jpg".equals(extension)){
+	    	InputStream is;
+			try {
+				is = getResources().getAssets().open(filename);
+		        currentBitmap = BitmapFactory.decodeStream(is);
+		        Log.d("Quiz","画像設定 "+filename);
+			} catch (IOException e) {
+				Log.e("Quiz", "ファイル読み込み失敗", e);
+				e.printStackTrace();
+			}
+	    }else if ("mp3".equals(extension)){
+	    	try {
+				AssetFileDescriptor afd = getContext().getAssets().openFd(filename);
+		    	MediaPlayer mp = new MediaPlayer();
+		    	mp.setDataSource(afd.getFileDescriptor());
+		    	mp.prepare();
+		    	mp.start();
+		    	Log.d("Quiz","音声再生 "+filename);
+			} catch (IOException e) {
+				Log.e("Quiz", "音声ファイル読み込み失敗");
+				e.printStackTrace();
+			}
+	    }
 	}
 
 	/**
-	 * Start Quiz
-	 * @param stage
+	 * クイズ開始
+	 * 何問目かをパラメータで渡す。
+	 * ステージ(海とか陸とか)は固定
+	 * 
+	 * @param quizNo ステージの何問目か
 	 */
-	public void start(String stage){
-		initStage(stage);
-		currentPanelQuestion = 0;
-		currentBitmap = bitmapList.get(0);
+	public void start(int quizNo){
+		initStage(null);
+		currentQuizNo = quizNo;
+		currentPanelQuestion = 0; // 問題の一枚目の画像にセット
+		currentAnswer = answers[quizNo];
+		playHint(getCurrentFilename());
 		
 		refreash();
 		setNextHintTimer();
@@ -124,7 +139,7 @@ public class QuizView extends View{
 			public void run() {
 				currentPanelQuestion++;
 				
-				if (currentPanelQuestion >= bitmapList.size()){
+				if (currentPanelQuestion >= stage[currentQuizNo].length){
 					currentPanelQuestion = 0;
 					if (listener != null){
 						listener.quizFinished();
@@ -139,8 +154,15 @@ public class QuizView extends View{
 	}
 	
 	private void refreash(){
-		currentBitmap = bitmapList.get(currentPanelQuestion);
+		
+		String currentFilename = getCurrentFilename();
+		playHint(currentFilename);
+		
 		invalidate();
+	}
+	
+	private String getCurrentFilename(){
+		return stage[currentQuizNo][currentPanelQuestion];
 	}
 	
 	@Override
@@ -151,7 +173,7 @@ public class QuizView extends View{
 			int w = currentBitmap.getWidth();
 			int h = currentBitmap.getHeight();
 			Rect src = new Rect(0, 0, currentBitmap.getWidth(), currentBitmap.getHeight());
-			Rect dst = new Rect(0, 200, (int)(w*0.5), 200 + (int)(h*0.5));
+			Rect dst = new Rect(0, 0,getWidth(),getHeight());
 			canvas.drawBitmap(currentBitmap, src, dst, null);
 		}
 
@@ -160,6 +182,11 @@ public class QuizView extends View{
 		return listener;
 	}
 
+	/**
+	 * 正解かどうか
+	 * @param answerList
+	 * @return
+	 */
 	public boolean answer(List<String> answerList){
 		for(String ans:answerList){
 			if (ans.contains(currentAnswer)){
@@ -171,10 +198,5 @@ public class QuizView extends View{
 
 	public void setListener(QuizViewListener listener) {
 		this.listener = listener;
-	}
-
-	
-	private void playSound(){
-		
 	}
 }

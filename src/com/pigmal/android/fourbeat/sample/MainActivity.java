@@ -52,7 +52,7 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 		super.onResume();
 		
 		// テスト開始
-		mQuizView.start("dummy");
+		mQuizView.start(0); // 0 = ステージ1の1問目
 		mQuizView.setListener(new QuizViewListener() {
 			@Override
 			public void quizFinished() {
