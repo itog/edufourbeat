@@ -72,10 +72,15 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 		mQuizView.stop();
 	}
 
-	private void updateUi(int id) {
-		mTextViews[id].setText(String.valueOf(mPoints[id]));
-		
-		//TODO ゲージ
+	private void updateUi(final int id) {
+		this.runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				mTextViews[id].setText(String.valueOf(mPoints[id]));
+				// gauge
+			}
+		});
 	}
 
 	@Override
