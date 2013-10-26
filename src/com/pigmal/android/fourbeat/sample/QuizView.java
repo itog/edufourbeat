@@ -74,10 +74,12 @@ public class QuizView extends View{
 	private String mCurrentAnswer = "馬";
 	private Bitmap mCurrentBitmap = null;
 	private Bitmap mCorrectBitmap = null;
+	private Bitmap mIncorrectBitmap = null;
 	private Runnable mCurrentTask;
 	private int mCurrentPanelQuestion = 0;
 	private QuizViewListener mListener = null;
 	private boolean mIsCorrect = false;
+	private boolean mIsMistake = false;
 	
 	private static final int DELAY_MS = 3000;
 
@@ -87,6 +89,9 @@ public class QuizView extends View{
 		try {
 			InputStream is = getResources().getAssets().open("correct.png");
 			mCorrectBitmap = BitmapFactory.decodeStream(is);
+			
+			is = getResources().getAssets().open("incorrect.png");
+			mIncorrectBitmap = BitmapFactory.decodeStream(is);
 		} catch (IOException e) {
 			Log.e("Quiz","正解画像読み込み失敗");
 			e.printStackTrace();
@@ -130,7 +135,7 @@ public class QuizView extends View{
 	 */
 	private void playSound(String filename){
 		try {
-			
+			Log.d("Quiz","音声再生 "+filename);
 			if (filename.equals("uma.mp3")){
 				MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.uma);
 				mp.start();
@@ -154,8 +159,7 @@ public class QuizView extends View{
 	    	mp.prepare();
 	    	mp.start();
 	    	
-	    	AssetFileDescriptor afd2 = getContext().getAssets().openFd("cat.mp3");
-	    	Log.d("Quiz","音声再生 "+filename+ "  " +" FD="+afd.getFileDescriptor() + " cat.mp3 FD="+afd2.getFileDescriptor());
+	
 		} catch (IOException e) {
 			Log.e("Quiz", "音声ファイル読み込み失敗",e);
 			e.printStackTrace();
@@ -197,6 +201,11 @@ public class QuizView extends View{
 	 */
 	public void resume(){
 		Log.d("Quiz","QuizView.resume");
+		if (mIsMistake){
+			mIsMistake = false;
+			invalidate();			
+		}
+
 		if (mCurrentTask != null){
 			mHander.postDelayed(mCurrentTask, DELAY_MS);
 		}
@@ -257,10 +266,30 @@ public class QuizView extends View{
 			Rect dst = new Rect(0, 0,getWidth(),getHeight());
 			canvas.drawBitmap(mCorrectBitmap, src, dst, null);
 		}
+		
+		if (mIsMistake){
+			Log.d("Quiz", "不正解描画");
+			Rect src = new Rect(0, 0, mIncorrectBitmap.getWidth(), mIncorrectBitmap.getHeight());
+			Rect dst = new Rect(0, 0,getWidth(),getHeight());
+			canvas.drawBitmap(mIncorrectBitmap, src, dst, null);
+		}
+		
 		Log.d("Quiz","再描画 end");
 	}
 	public QuizViewListener getListener() {
 		return mListener;
+	}
+	
+	@Override
+	protected void onVisibilityChanged(View changedView, int visibility) {
+		super.onVisibilityChanged(changedView, visibility);
+		/*
+		if(visibility == View.INVISIBLE){
+			if (mCurrentTask != null){
+				mHander.removeCallbacks(mCurrentTask);
+			}
+		}*/
+		Log.d("Quiz","onVisivilityChanged visivility="+visibility);
 	}
 
 	/**
@@ -277,6 +306,8 @@ public class QuizView extends View{
 				return true;
 			}
 		}
+		mIsMistake = true;
+		invalidate();
 		return false;
 	}
 

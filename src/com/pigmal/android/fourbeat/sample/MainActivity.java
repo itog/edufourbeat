@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +21,7 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 	private QuizView mQuizView;
 	int[] mPoints = {0, 0, 0, 0};
 	int[] mCorrectPoints = {0, 0, 0, 0};
+	private Handler mHander = new Handler();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,12 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 				Log.d("Quiz","クイズ終了");
 			}
 		});
+	}
+	
+	@Override
+	protected void onStop() {
+		super.onStop();
+		mQuizView.stop();
 	}
 
 	private void updateUi(int id) {
@@ -180,8 +188,13 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 					finish();
 				}
 			} else {
-				// 誤答であれば再開
-				resumeGame();
+				// 誤答であれば間違い画像が表示されるので、2秒後に再開
+				mHander.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						resumeGame();
+					}
+				},2000);
             }
         } else {
         	resumeGame();
