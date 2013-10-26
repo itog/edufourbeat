@@ -102,6 +102,7 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 		}
 	}
 
+	int mRound = 0;
 	enum GAME_STATE {IDLE, GAUGE, ANSWER};
 	GAME_STATE mGameState = GAME_STATE.IDLE;
 	static final int GAUGE_MAX = 5;
@@ -110,6 +111,7 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 		Log.v(TAG, "handle " + id);
 		switch (mGameState) {
 		case IDLE:
+			mQuizView.start(mRound); // 0 = ステージ1の1問目
 			break;
 		case GAUGE:
 			mPoints[id] += 1;
@@ -133,7 +135,6 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 	void startAnswer(int id) {
 		mQuizView.stop(); // ヒントの進行をpause
 		callRecognizer();
-		//TODO 音声認識開始
 	}
 
 	static final int REQUEST_CODE = 1234;
@@ -170,10 +171,16 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
             }
             Toast.makeText(this, resultsString, Toast.LENGTH_LONG).show();
 
-            if (checkAnswer(results)) {
-            	//TODO 正解！
-            } else {
-            	resumeGame();
+			if (checkAnswer(results)) {
+				// TODO 正解！ポイント追加？
+				mGameState = GAME_STATE.IDLE;
+				mRound++;
+				if (mRound > mQuizView.getStageCount()) {
+					finish();
+				}
+			} else {
+				// 誤答であれば再開
+				resumeGame();
             }
         } else {
         	resumeGame();
@@ -181,13 +188,17 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
         super.onActivityResult(requestCode, resultCode, data);
     }
     
+    // ゲームに戻る
     void resumeGame() {
-    	// 誤答。ゲームに戻る
     	mGameState = GAME_STATE.GAUGE;
-    	
-    	//ヒントの進行再開    
-    	mQuizView.resume(); 
+
+		// ヒントの進行再開
+		mQuizView.resume();
     }
+
+	void startNext() {
+		mQuizView.start(mRound);
+	}
 
     boolean checkAnswer(List<String> answers) {
     	return mQuizView.answer(answers);

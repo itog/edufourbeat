@@ -255,7 +255,6 @@ public class QuizView extends View{
 	public void setListener(QuizViewListener listener) {
 		this.mListener = listener;
 	}
-	
 	/**
 	 * 現在のステージが何問あるかを返す。
 	 * @return
