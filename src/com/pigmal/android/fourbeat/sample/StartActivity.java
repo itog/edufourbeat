@@ -13,17 +13,17 @@ public class StartActivity extends FourBeatBaseActivity implements OnClickListen
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.select_stage_activity);
+		setContentView(R.layout.start_activity);
 		
 		mButtons = new Button[4];
 		mButtons[0] = (Button)findViewById(R.id.button_red);
 		mButtons[0].setOnClickListener(this);
-		mButtons[1] = (Button)findViewById(R.id.button_blue);
-		mButtons[1].setOnClickListener(this);
-		mButtons[2] = (Button)findViewById(R.id.button_yellow);
-		mButtons[2].setOnClickListener(this);
-		mButtons[3] = (Button)findViewById(R.id.button_green);
-		mButtons[3].setOnClickListener(this);
+//		mButtons[1] = (Button)findViewById(R.id.button_blue);
+//		mButtons[1].setOnClickListener(this);
+//		mButtons[2] = (Button)findViewById(R.id.button_yellow);
+//		mButtons[2].setOnClickListener(this);
+//		mButtons[3] = (Button)findViewById(R.id.button_green);
+//		mButtons[3].setOnClickListener(this);
 	}
 
 	@Override

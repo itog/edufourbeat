@@ -1,6 +1,5 @@
 package com.pigmal.android.fourbeat.sample;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -37,11 +36,6 @@ public class SelectStageActivity extends FourBeatBaseActivity implements OnClick
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-	}
-
-	void hoge() {
-		startActivity(new Intent(SelectStageActivity.this, MainActivity.class));
-		finish();
 	}
 
 	@Override

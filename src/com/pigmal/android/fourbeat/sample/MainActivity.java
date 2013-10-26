@@ -19,6 +19,7 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 	TextView[] mTextViews; //TODO ゲージ画像に差し替え
 	private QuizView mQuizView;
 	int[] mPoints = {0, 0, 0, 0};
+	int[] mCorrectPoints = {0, 0, 0, 0};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

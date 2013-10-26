@@ -1,24 +1,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-
+    android:layout_height="match_parent"
+    android:background="@drawable/quiz_background" >
+    
     <LinearLayout
         android:id="@+id/gauge_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" >
-        
-        <com.pigmal.android.fourbeat.sample.QuizView 
-            	android:id="@+id/quizview"
-            	android:layout_width="300dp"
-            	android:layout_height="300dp"
-            />
            
         <TextView
             android:id="@+id/gauge0"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="#f00"
             android:text="0"
             android:textAppearance="?android:attr/textAppearanceLarge" />
         <TextView
@@ -26,6 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="#00f"
             android:text="0"
             android:textAppearance="?android:attr/textAppearanceLarge" />
         <TextView
@@ -33,6 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="#ff0"
             android:text="0"
             android:textAppearance="?android:attr/textAppearanceLarge" />
         <TextView
@@ -41,6 +39,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="0"
+            android:background="#0f0"
             android:textAppearance="?android:attr/textAppearanceLarge" />
         </LinearLayout>
+
+    <com.pigmal.android.fourbeat.sample.QuizView
+        android:id="@+id/quizview"
+        android:layout_width="550dp"
+        android:layout_height="340dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="43dp" />
+
 </RelativeLayout>
