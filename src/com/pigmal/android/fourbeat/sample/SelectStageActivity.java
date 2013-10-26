@@ -90,6 +90,5 @@ public class SelectStageActivity extends FourBeatBaseActivity implements OnClick
 		Intent i = new Intent(this, MainActivity.class);
 		i.putExtra("stage", stage);
 		startActivity(i);
-		finish();
 	}
 }
