@@ -1,12 +1,13 @@
 package com.pigmal.android.fourbeat.sample;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-public class StartActivity extends FourBeatBaseActivity implements OnClickListener {
+public class SelectStageActivity extends FourBeatBaseActivity implements OnClickListener {
 
 	Button[] mButtons;
 
@@ -39,7 +40,7 @@ public class StartActivity extends FourBeatBaseActivity implements OnClickListen
 	}
 
 	void hoge() {
-		startActivity(new Intent(StartActivity.this, MainActivity.class));
+		startActivity(new Intent(SelectStageActivity.this, MainActivity.class));
 		finish();
 	}
 
@@ -75,13 +76,26 @@ public class StartActivity extends FourBeatBaseActivity implements OnClickListen
 	}
 
 	void handle(int buttonId) {
+		String stage = "";
 		switch (buttonId) {
 		case 0:
-			startActivity(new Intent(this, SelectStageActivity.class));
-			finish();
+			stage = "land";
+			break;
+		case 1:
+			stage = "sea";
+			break;
+		case 2:
+			stage = "mountain";
+			break;
+		case 3:
+			stage = "sky";
 			break;
 		default:
 			break;
 		}
+		Intent i = new Intent(this, MainActivity.class);
+		i.putExtra("stage", stage);
+		startActivity(i);
+		finish();
 	}
 }
