@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -32,7 +34,9 @@ public class QuizView extends View{
 			"猫"
 	};
 	
-	private String currentAnswer ;
+	private MediaPlayer mediaPlayer;
+	
+	private String currentAnswer = "馬";
 	
 	private List<Bitmap> bitmapList = new ArrayList<Bitmap>();
 	
@@ -73,6 +77,14 @@ public class QuizView extends View{
 				}
 		    }
 		}
+		
+		// Sounds
+		try {
+			AssetFileDescriptor afd = getContext().getAssets().openFd("hourse.mp3");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	/**
@@ -150,7 +162,7 @@ public class QuizView extends View{
 
 	public boolean answer(List<String> answerList){
 		for(String ans:answerList){
-			if (currentAnswer.contains(ans)){
+			if (ans.contains(currentAnswer)){
 				return true;
 			}
 		}
@@ -161,4 +173,8 @@ public class QuizView extends View{
 		this.listener = listener;
 	}
 
+	
+	private void playSound(){
+		
+	}
 }
