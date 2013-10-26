@@ -17,12 +17,15 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 	protected static final String TAG = "ServiceSample";
 	
 	TextView[] mTextViews; //TODO ゲージ画像に差し替え
+	private QuizView mQuizView;
 	int[] mPoints = {0, 0, 0, 0};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.play_activity);
+		
+		mQuizView = (QuizView) findViewById(R.id.quizview);
 		
 		mTextViews = new TextView[4];
 		mTextViews[0] = (TextView)findViewById(R.id.gauge0);
@@ -47,6 +50,16 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		
+		// テスト開始
+		mQuizView.start("dummy");
+		mQuizView.setListener(new QuizViewListener() {
+			@Override
+			public void quizFinished() {
+				// 正解せずクイズ終了
+				Log.d("Quiz","クイズ終了");
+			}
+		});
 	}
 
 	private void updateUi(int id) {
@@ -116,7 +129,7 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
 
 	// player id が回答権取得。音声認識スタート
 	void startAnswer(int id) {
-		//TODO ヒントの進行をpause
+		mQuizView.stop(); // ヒントの進行をpause
 		callRecognizer();
 		//TODO 音声認識開始
 	}
@@ -169,11 +182,12 @@ public class MainActivity extends FourBeatBaseActivity implements OnClickListene
     void resumeGame() {
     	// 誤答。ゲームに戻る
     	mGameState = GAME_STATE.GAUGE;
-    	//TODO ヒントの進行再開    	
+    	
+    	//ヒントの進行再開    
+    	mQuizView.resume(); 
     }
 
     boolean checkAnswer(List<String> answers) {
-    	//TODO
-    	return false;
+    	return mQuizView.answer(answers);
     }
 }

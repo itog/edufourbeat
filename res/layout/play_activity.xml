@@ -7,6 +7,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" >
+        
+        <com.pigmal.android.fourbeat.sample.QuizView 
+            	android:id="@+id/quizview"
+            	android:layout_width="300dp"
+            	android:layout_height="300dp"
+            />
+           
         <TextView
             android:id="@+id/gauge0"
             android:layout_width="0dp"
