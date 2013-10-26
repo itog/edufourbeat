@@ -27,19 +27,40 @@ public class QuizView extends View{
 	private String[][] mStage =
 		{
 			{
-				"uma_sample.jpg",
-				"android_1.gif",
-				"android_2.jpg",
-				"horse.mp3",
-				"android_3.jpg",
-			}
+				"uma1.jpg",
+				"uma2.jpg",
+				"uma3.jpg",
+				"uma4.jpg",
+				"uma5.jpg",
+			},
+			{
+				"inu1.jpg",
+				"inu2.jpg",
+				"inu3.jpg",
+				"inu4.jpg",
+				"inu5.jpg",
+			},
+			{
+				"elephant1.jpg",
+				"elephant2.jpg",
+				"elephant3.jpg",
+				"elephant4.jpg",
+				"elephant5.jpg",
+			},
+			{
+				"neko1.jpg",
+				"neko2.jpg",
+				"neko3.jpg",
+				"neko4.jpg",
+				"neko5.jpg",
+			},
 	};
 	
 	private String[] mAnswers = {
 			"馬",
+			"犬",
 			"象",
 			"猫",
-			"犬"
 	};
 	
 	private String mCurrentAnswer = "馬";
@@ -223,5 +244,13 @@ public class QuizView extends View{
 
 	public void setListener(QuizViewListener listener) {
 		this.mListener = listener;
+	}
+	
+	/**
+	 * 現在のステージが何問あるかを返す。
+	 * @return
+	 */
+	public int getQuizSize(){
+		return mStage.length;
 	}
 }
