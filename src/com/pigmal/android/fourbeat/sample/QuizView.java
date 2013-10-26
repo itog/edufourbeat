@@ -24,6 +24,10 @@ public class QuizView extends View{
 	private Handler mHander = new Handler();
 	private int mCurrentQuizNo = 0;
 	
+	/**
+	 * ステージ情報
+	 * jpg gif mp3が設定可能
+	 */
 	private String[][] mStage =
 		{
 			{
@@ -69,22 +73,20 @@ public class QuizView extends View{
 	private Runnable mCurrentTask;
 	private int mCurrentPanelQuestion = 0;
 	private QuizViewListener mListener = null;
-
-	private static final int DELAY_MS = 3000;
 	private boolean mIsCorrect = false;
 	
+	private static final int DELAY_MS = 3000;
+
 	public QuizView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		
-		InputStream is;
+				
 		try {
-			is = getResources().getAssets().open("correct.png");
+			InputStream is = getResources().getAssets().open("correct.png");
 			mCorrectBitmap = BitmapFactory.decodeStream(is);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			Log.e("Quiz","正解画像読み込み失敗");
 			e.printStackTrace();
 		}
-        
 	}
 
 	/**
@@ -114,18 +116,26 @@ public class QuizView extends View{
 				e.printStackTrace();
 			}
 	    }else if ("mp3".equals(extension)){
-	    	try {
-				AssetFileDescriptor afd = getContext().getAssets().openFd(filename);
-		    	MediaPlayer mp = new MediaPlayer();
-		    	mp.setDataSource(afd.getFileDescriptor());
-		    	mp.prepare();
-		    	mp.start();
-		    	Log.d("Quiz","音声再生 "+filename);
-			} catch (IOException e) {
-				Log.e("Quiz", "音声ファイル読み込み失敗");
-				e.printStackTrace();
-			}
+	    	playSound(filename);
 	    }
+	}
+	
+	/**
+	 * 音声ファイルを再生する。
+	 * @param filename
+	 */
+	private void playSound(String filename){
+		try {
+			AssetFileDescriptor afd = getContext().getAssets().openFd(filename);
+	    	MediaPlayer mp = new MediaPlayer();
+	    	mp.setDataSource(afd.getFileDescriptor());
+	    	mp.prepare();
+	    	mp.start();
+	    	Log.d("Quiz","音声再生 "+filename);
+		} catch (IOException e) {
+			Log.e("Quiz", "音声ファイル読み込み失敗",e);
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -208,7 +218,7 @@ public class QuizView extends View{
 		if (mCurrentBitmap != null){
 			int w = mCurrentBitmap.getWidth();
 			int h = mCurrentBitmap.getHeight();
-			Rect src = new Rect(0, 0, mCurrentBitmap.getWidth(), mCurrentBitmap.getHeight());
+			Rect src = new Rect(0, 0, w, h);
 			Rect dst = new Rect(0, 0,getWidth(),getHeight());
 			canvas.drawBitmap(mCurrentBitmap, src, dst, null);
 		}
