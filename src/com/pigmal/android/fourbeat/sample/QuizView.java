@@ -22,10 +22,9 @@ import android.webkit.WebChromeClient.CustomViewCallback;
 public class QuizView extends View{
 
 	private Handler mHander = new Handler();
+	private int mCurrentQuizNo = 0;
 	
-	private int currentQuizNo = 0;
-	
-	private String[][] stage =
+	private String[][] mStage =
 		{
 			{
 				"uma_sample.jpg",
@@ -36,24 +35,35 @@ public class QuizView extends View{
 			}
 	};
 	
-	private String[] answers = {
+	private String[] mAnswers = {
 			"馬",
 			"象",
 			"猫",
 			"犬"
 	};
 	
-	private String currentAnswer = "馬";
-	
-	private Bitmap currentBitmap = null;
-	private Runnable currentTask;
-	private int currentPanelQuestion = 0;
-	private QuizViewListener listener = null;
+	private String mCurrentAnswer = "馬";
+	private Bitmap mCurrentBitmap = null;
+	private Bitmap mCorrectBitmap = null;
+	private Runnable mCurrentTask;
+	private int mCurrentPanelQuestion = 0;
+	private QuizViewListener mListener = null;
 
 	private static final int DELAY_MS = 3000;
+	private boolean mIsCorrect = false;
 	
 	public QuizView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		
+		InputStream is;
+		try {
+			is = getResources().getAssets().open("correct.png");
+			mCorrectBitmap = BitmapFactory.decodeStream(is);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
 	}
 
 	/**
@@ -62,7 +72,7 @@ public class QuizView extends View{
 	 * @param stage
 	 */
 	public void initStage(String stage) {
-		currentQuizNo = 0;
+		mCurrentQuizNo = 0;
 	}
 	
 	private void playHint(String filename){
@@ -76,7 +86,7 @@ public class QuizView extends View{
 	    	InputStream is;
 			try {
 				is = getResources().getAssets().open(filename);
-		        currentBitmap = BitmapFactory.decodeStream(is);
+		        mCurrentBitmap = BitmapFactory.decodeStream(is);
 		        Log.d("Quiz","画像設定 "+filename);
 			} catch (IOException e) {
 				Log.e("Quiz", "ファイル読み込み失敗", e);
@@ -105,10 +115,12 @@ public class QuizView extends View{
 	 * @param quizNo ステージの何問目か
 	 */
 	public void start(int quizNo){
+		Log.d("Quiz","QuizView.start");
 		initStage(null);
-		currentQuizNo = quizNo;
-		currentPanelQuestion = 0; // 問題の一枚目の画像にセット
-		currentAnswer = answers[quizNo];
+		mCurrentQuizNo = quizNo;
+		mCurrentPanelQuestion = 0; // 問題の一枚目の画像にセット
+		mCurrentAnswer = mAnswers[quizNo];
+		mIsCorrect = false;
 		playHint(getCurrentFilename());
 		
 		refreash();
@@ -119,8 +131,9 @@ public class QuizView extends View{
 	 * Stop Quiz
 	 */
 	public void stop(){
-		if (currentTask != null){
-			mHander.removeCallbacks(currentTask);
+		Log.d("Quiz","QuizView.stop");
+		if (mCurrentTask != null){
+			mHander.removeCallbacks(mCurrentTask);
 		}
 	}
 	
@@ -128,21 +141,22 @@ public class QuizView extends View{
 	 * Resume Quiz
 	 */
 	public void resume(){
-		if (currentTask != null){
-			mHander.postDelayed(currentTask, DELAY_MS);
+		Log.d("Quiz","QuizView.resume");
+		if (mCurrentTask != null){
+			mHander.postDelayed(mCurrentTask, DELAY_MS);
 		}
 	}
 	
 	private void setNextHintTimer(){
-		currentTask = new Runnable() {
+		mCurrentTask = new Runnable() {
 			@Override
 			public void run() {
-				currentPanelQuestion++;
+				mCurrentPanelQuestion++;
 				
-				if (currentPanelQuestion >= stage[currentQuizNo].length){
-					currentPanelQuestion = 0;
-					if (listener != null){
-						listener.quizFinished();
+				if (mCurrentPanelQuestion >= mStage[mCurrentQuizNo].length){
+					mCurrentPanelQuestion = 0;
+					if (mListener != null){
+						mListener.quizFinished();
 					}
 				}else{
 					refreash();
@@ -150,7 +164,7 @@ public class QuizView extends View{
 				}
 			}
 		};
-		mHander.postDelayed(currentTask, DELAY_MS);
+		mHander.postDelayed(mCurrentTask, DELAY_MS);
 	}
 	
 	private void refreash(){
@@ -162,24 +176,32 @@ public class QuizView extends View{
 	}
 	
 	private String getCurrentFilename(){
-		return stage[currentQuizNo][currentPanelQuestion];
+		return mStage[mCurrentQuizNo][mCurrentPanelQuestion];
 	}
 	
 	@Override
 	protected void onDraw(Canvas canvas) {	
 		super.onDraw(canvas);
+		Log.d("Quiz","再描画 start");
 		
-		if (currentBitmap != null){
-			int w = currentBitmap.getWidth();
-			int h = currentBitmap.getHeight();
-			Rect src = new Rect(0, 0, currentBitmap.getWidth(), currentBitmap.getHeight());
+		if (mCurrentBitmap != null){
+			int w = mCurrentBitmap.getWidth();
+			int h = mCurrentBitmap.getHeight();
+			Rect src = new Rect(0, 0, mCurrentBitmap.getWidth(), mCurrentBitmap.getHeight());
 			Rect dst = new Rect(0, 0,getWidth(),getHeight());
-			canvas.drawBitmap(currentBitmap, src, dst, null);
+			canvas.drawBitmap(mCurrentBitmap, src, dst, null);
 		}
-
+		
+		if (mIsCorrect){
+			Log.d("Quiz", "正解描画");
+			Rect src = new Rect(0, 0, mCorrectBitmap.getWidth(), mCorrectBitmap.getHeight());
+			Rect dst = new Rect(0, 0,getWidth(),getHeight());
+			canvas.drawBitmap(mCorrectBitmap, src, dst, null);
+		}
+		Log.d("Quiz","再描画 end");
 	}
 	public QuizViewListener getListener() {
-		return listener;
+		return mListener;
 	}
 
 	/**
@@ -189,7 +211,10 @@ public class QuizView extends View{
 	 */
 	public boolean answer(List<String> answerList){
 		for(String ans:answerList){
-			if (ans.contains(currentAnswer)){
+			if (ans.contains(mCurrentAnswer)){
+				Log.d("Quiz","正解 正解="+mCurrentAnswer+" 入力="+ans);
+				mIsCorrect = true;
+				invalidate();
 				return true;
 			}
 		}
@@ -197,6 +222,6 @@ public class QuizView extends View{
 	}
 
 	public void setListener(QuizViewListener listener) {
-		this.listener = listener;
+		this.mListener = listener;
 	}
 }
