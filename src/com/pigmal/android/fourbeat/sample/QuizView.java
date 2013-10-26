@@ -203,12 +203,7 @@ public class QuizView extends View{
 		Log.d("Quiz","QuizView.resume");
 		if (mIsMistake){
 			mIsMistake = false;
-			mHander.post(new Runnable() {
-				@Override
-				public void run() {
-					invalidate();				
-				}
-			});
+			invalidateByUIThread();
 		}
 
 		if (mCurrentTask != null){
@@ -245,12 +240,7 @@ public class QuizView extends View{
 		String currentFilename = getCurrentFilename();
 		playHint(currentFilename);
 		
-		mHander.post(new Runnable() {
-			@Override
-			public void run() {
-				invalidate();
-			}
-		});
+		invalidateByUIThread();
 		
 	}
 	
@@ -313,13 +303,23 @@ public class QuizView extends View{
 			if (ans.contains(mCurrentAnswer)){
 				Log.d("Quiz","正解 正解="+mCurrentAnswer+" 入力="+ans);
 				mIsCorrect = true;
-				invalidate();
+				invalidateByUIThread();
+				 
 				return true;
 			}
 		}
 		mIsMistake = true;
-		invalidate();
+		invalidateByUIThread();
 		return false;
+	}
+	
+	private void invalidateByUIThread(){
+		mHander.post(new Runnable() {
+			@Override
+			public void run() {
+				invalidate();
+			}
+		});
 	}
 
 	public void setListener(QuizViewListener listener) {
