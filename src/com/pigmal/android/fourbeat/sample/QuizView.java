@@ -179,6 +179,10 @@ public class QuizView extends View{
 	}
 	
 	private void setNextHintTimer(){
+		if (mCurrentTask != null){
+			mHander.removeCallbacks(mCurrentTask);
+		}
+		
 		mCurrentTask = new Runnable() {
 			@Override
 			public void run() {
